@@ -1,0 +1,8 @@
+# XML files
+*.xml
+
+# IntelliJ IDEA module files
+*.iml
+
+# CSV files
+*.csv
