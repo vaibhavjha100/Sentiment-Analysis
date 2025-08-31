@@ -6,3 +6,6 @@
 
 # CSV files
 *.csv
+
+# main.py file in finsenti package
+finsenti/main.py
