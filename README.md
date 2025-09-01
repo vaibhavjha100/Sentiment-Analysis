@@ -34,6 +34,8 @@ df, tickers = preprocessing_pipeline(df, tickers)
 - marketminer
 - dotenv
 - google-genai
+- transformers
+- torch
 
 ## License
 
