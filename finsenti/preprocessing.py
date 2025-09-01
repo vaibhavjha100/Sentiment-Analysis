@@ -86,12 +86,12 @@ def custom_ticker_aliases(tickers: list, gemini_api_key: str) -> list:
 
     return unique_names
 
-def preprocessing_pipeline(df, word_count_threshold=5, gemini_api_key=None, tickers=None):
+def preprocessing_pipeline(data, word_count_threshold=5, gemini_api_key=None, tickers=None):
     """
     Complete preprocessing pipeline for news data.
 
     Parameters:
-    df (pd.DataFrame): DataFrame containing the news data.
+    data (str or pd.DataFrame): File path to the CSV file or a DataFrame.
     word_count_threshold (int): Minimum number of words required to keep an article.
     gemini_api_key (str): API key for Gemini (optional).
     tickers (list): List of ticker symbols (optional).
@@ -100,6 +100,15 @@ def preprocessing_pipeline(df, word_count_threshold=5, gemini_api_key=None, tick
     pd.DataFrame: Preprocessed DataFrame.
     list: List of ticker symbols with their aliases (if tickers and gemini_api_key are provided).
     """
+
+    # Load data if a file path is provided, otherwise assume data is already a DataFrame
+    if isinstance(data, str):
+        df = load_data(data)
+    elif isinstance(data, pd.DataFrame):
+        df = data
+    else:
+        raise ValueError("data must be a file path or a pandas DataFrame")
+
     df = filter_data(df, word_count_threshold)
     df = clean_data(df)
 
