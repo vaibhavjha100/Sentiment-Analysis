@@ -16,9 +16,24 @@ pip install finsenti
 
 ## Usage
 
+1. Preprocess your financial text data.
+
+```python
+import pandas as pd
+from finsenti import preprocessing_pipeline
+# Input DataFrame df with a 'body' column and a list of tickers
+df = pd.DataFrame({'body': ["The stock market is bullish today.", 
+                             "Economic downturn expected next quarter.",
+                            "Google's new product launch boosts investor confidence."]})
+tickers = ['AAPL', 'GOOGL']
+df, tickers = preprocessing_pipeline(df, tickers)
+```
+
 ## Dependencies
 - pandas
 - marketminer
+- dotenv
+- google-genai
 
 ## License
 
