@@ -1,0 +1,4 @@
+marketminer
+pandas
+dotenv
+google-genai
