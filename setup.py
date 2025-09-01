@@ -26,7 +26,9 @@ setup(
     packages=find_packages(),
     install_requires=[
         "pandas",
-        "marketminer"
+        "marketminer",
+        "google-genai",
+        "dotenv"
     ],
     python_requires=">=3.7",
     license="MIT",
