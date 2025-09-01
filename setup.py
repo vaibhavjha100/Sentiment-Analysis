@@ -28,7 +28,9 @@ setup(
         "pandas",
         "marketminer",
         "google-genai",
-        "dotenv"
+        "dotenv",
+        "transformers",
+        "torch",
     ],
     python_requires=">=3.7",
     license="MIT",

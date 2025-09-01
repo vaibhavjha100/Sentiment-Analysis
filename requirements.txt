@@ -2,3 +2,5 @@ marketminer
 pandas
 dotenv
 google-genai
+torch
+transformers
