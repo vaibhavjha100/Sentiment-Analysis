@@ -9,3 +9,7 @@
 
 # main.py file in finsenti package
 finsenti/main.py
+
+# Environment variable files
+.env
+.env.*
