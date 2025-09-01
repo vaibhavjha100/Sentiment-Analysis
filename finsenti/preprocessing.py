@@ -64,9 +64,19 @@ def custom_ticker_aliases(tickers: list, gemini_api_key: str) -> list:
     names = []
     client = genai.Client(api_key=gemini_api_key)
     for ticker in tickers:
-        prompt = f"Provide a comprehensive list of all known aliases for the ticker symbol '{ticker}'. Format the response as a Python list. For example, AAPL may return ['AAPL', 'Apple Inc', 'Apple', 'Apple Corporation']. Try to include all possible variationsof tickers, full name, short name, corporate forms, etc."
+        prompt = f"""Return only a Python list of aliases for ticker '{ticker}'. Include:
+- The ticker symbol itself
+- Full company name
+- Common abbreviations
+- Alternative corporate forms
+- Any other known aliases
+
+Also try to include all possible variations and common misspellings.
+
+Return ONLY the list, no explanation, no markdown, just the list. Example format: ['AAPL', 'Apple Inc', 'Apple', 'Apple Corporation']"""
+
         response = client.models.generate_content(
-            model = "gemini-2.5-flash",
+            model = "gemini-2.5-pro",
             contents = prompt
         )
         text = response.text or ""
@@ -81,8 +91,9 @@ def custom_ticker_aliases(tickers: list, gemini_api_key: str) -> list:
         names.extend([ticker]+alias_list)
 
     unique_names = list(set(names))
-    # Strip\n and extra spaces
-    unique_names = [name.replace("\n", " ").strip() for name in unique_names if name.strip()]
+
+    # Remove unnecessary characters like `, python, \n, [, ]
+    unique_names = [name.replace('`', '').replace('\n', '').replace('python','').replace('[', '').replace(']', '').strip() for name in unique_names if name]
 
     return unique_names
 
@@ -117,3 +128,4 @@ def preprocessing_pipeline(data, word_count_threshold=5, gemini_api_key=None, ti
         ticker_aliases = custom_ticker_aliases(tickers, gemini_api_key)
 
     return df, ticker_aliases
+
