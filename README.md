@@ -36,6 +36,7 @@ df, tickers = preprocessing_pipeline(df, tickers)
 - google-genai
 - transformers
 - torch
+- hf_xet
 
 ## License
 

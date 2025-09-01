@@ -31,6 +31,7 @@ setup(
         "dotenv",
         "transformers",
         "torch",
+        "hf_xet",
     ],
     python_requires=">=3.7",
     license="MIT",
