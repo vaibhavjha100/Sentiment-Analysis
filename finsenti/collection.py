@@ -17,5 +17,5 @@ def collect_news(start, end):
     Saves the DataFrame to 'news_data.csv'.
     """
     df = scrape_economic_times(start, end)
-    df.to_csv("news_data.csv", index=False)
+    df.to_csv("news_data.csv")
     return df
