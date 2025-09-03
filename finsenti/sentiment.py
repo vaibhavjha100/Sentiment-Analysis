@@ -98,11 +98,16 @@ def predict_sentiment(text: str) -> float:
     probs = np.asarray(weighted_probs, dtype=float)
     probs /= probs.sum() + eps
 
-    P_pos, P_neu, P_neg = probs[0], probs[1], probs[2]
+    id2label = model.config.id2label
+    label_map = {v.lower(): k for k, v in id2label.items()}
+
+    P_pos = probs[label_map.get("positive", 0)]
+    P_neg = probs[label_map.get("negative", 1)]
+    P_neu = probs[label_map.get("neutral", 2)]
 
     logodds = math.log((P_pos + eps) / (P_neg + eps))
-
-    compound = max(-clip, min(clip, logodds))
+    compound = (1 - P_neu) * logodds
+    compound = max(-clip, min(clip, compound))
 
     return compound
 
@@ -130,11 +135,11 @@ def enhance_ticker_specific_sentiment(text: str, tickers: list, compound : float
     if mentions == 0:
         return compound
 
-    multiplier = 1 + 0.3 * math.log1p(mentions)
+    if abs(compound) > 0.5:
+        multiplier = 1 + 0.3 * math.log1p(mentions)
+        compound *= multiplier
 
-    enhanced_compound = compound * multiplier
-
-    return enhanced_compound
+    return compound
 
 
 
