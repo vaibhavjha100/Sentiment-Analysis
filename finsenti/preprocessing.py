@@ -19,21 +19,22 @@ def load_data(file_path):
     """
     return pd.read_csv(file_path)
 
-def filter_data(df, word_count_threshold=5):
+def filter_data(df, text_column='body', word_count_threshold=5):
     """
     Filter out articles with fewer than a specified number of words.
 
     Parameters:
     df (pd.DataFrame): DataFrame containing the news data.
+    text_column (str): Name of the column containing text data.
     word_count_threshold (int): Minimum number of words required to keep an article.
 
     Returns:
     pd.DataFrame: Filtered DataFrame.
     """
-    df['word_count'] = df['body'].apply(lambda x: len(str(x).split()))
+    df['word_count'] = df[text_column].apply(lambda x: len(str(x).split()))
     return df[df['word_count'] >= word_count_threshold].drop(columns=['word_count'])
 
-def clean_data(df):
+def clean_data(df, text_column='body'):
     """
     Clean the news data for financial RoBERTa model.
     Expected cleaning steps:
@@ -44,8 +45,8 @@ def clean_data(df):
     Returns:
     pd.DataFrame: Cleaned DataFrame.
     """
-    df['body'] = df['body'].str.replace(r'\s+', ' ', regex=True).str.strip()
-    df['body'] = df['body'].apply(lambda x: x.encode('utf-8', 'ignore').decode('utf-8', 'ignore'))
+    df[text_column] = df[text_column].str.replace(r'\s+', ' ', regex=True).str.strip()
+    df[text_column] = df[text_column].apply(lambda x: x.encode('utf-8', 'ignore').decode('utf-8', 'ignore'))
     return df
 
 def custom_ticker_aliases(tickers: list, gemini_api_key: str) -> list:
@@ -97,12 +98,13 @@ Return ONLY the list, no explanation, no markdown, just the list. Example format
 
     return unique_names
 
-def preprocessing_pipeline(data, word_count_threshold=5, gemini_api_key=None, tickers=None):
+def preprocessing_pipeline(data, text_column='body', word_count_threshold=5, gemini_api_key=None, tickers=None):
     """
     Complete preprocessing pipeline for news data.
 
     Parameters:
     data (str or pd.DataFrame): File path to the CSV file or a DataFrame.
+    text_column (str): Name of the column containing text data.
     word_count_threshold (int): Minimum number of words required to keep an article.
     gemini_api_key (str): API key for Gemini (optional).
     tickers (list): List of ticker symbols (optional).
