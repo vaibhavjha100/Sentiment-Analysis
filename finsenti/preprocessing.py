@@ -122,8 +122,8 @@ def preprocessing_pipeline(data, text_column='body', word_count_threshold=5, gem
     else:
         raise ValueError("data must be a file path or a pandas DataFrame")
 
-    df = filter_data(df, word_count_threshold)
-    df = clean_data(df)
+    df = filter_data(df, text_column, word_count_threshold)
+    df = clean_data(df, text_column)
 
     ticker_aliases = None
     if gemini_api_key and tickers:
