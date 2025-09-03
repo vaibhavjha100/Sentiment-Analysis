@@ -32,6 +32,7 @@ setup(
         "transformers",
         "torch",
         "hf_xet",
+        "scipy",
     ],
     python_requires=">=3.7",
     license="MIT",

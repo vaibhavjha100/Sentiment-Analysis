@@ -38,6 +38,7 @@ print(df.info())
 - transformers
 - torch
 - hf_xet
+- scipy
 
 ## License
 

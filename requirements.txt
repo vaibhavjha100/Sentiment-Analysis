@@ -5,3 +5,4 @@ google-genai
 torch
 transformers
 hf_xet
+scipy
