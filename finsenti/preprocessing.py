@@ -4,8 +4,11 @@ Module for preprocessing news data for sentiment analysis.
 
 import pandas as pd
 from google import genai
-from google.genai import types
 import json
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def load_data(file_path):
     """
@@ -17,6 +20,7 @@ def load_data(file_path):
     Returns:
     pd.DataFrame: DataFrame containing the news data.
     """
+    logger.info(f"Loading data from {file_path}")
     return pd.read_csv(file_path)
 
 def filter_data(df, text_column='body', word_count_threshold=5):
@@ -31,6 +35,7 @@ def filter_data(df, text_column='body', word_count_threshold=5):
     Returns:
     pd.DataFrame: Filtered DataFrame.
     """
+    logger.info(f"Filtering articles with fewer than {word_count_threshold} words in column '{text_column}'")
     df['word_count'] = df[text_column].apply(lambda x: len(str(x).split()))
     return df[df['word_count'] >= word_count_threshold].drop(columns=['word_count'])
 
@@ -45,6 +50,7 @@ def clean_data(df, text_column='body'):
     Returns:
     pd.DataFrame: Cleaned DataFrame.
     """
+    logger.info(f"Cleaning data in column '{text_column}'")
     df[text_column] = df[text_column].str.replace(r'\s+', ' ', regex=True).str.strip()
     df[text_column] = df[text_column].apply(lambda x: x.encode('utf-8', 'ignore').decode('utf-8', 'ignore'))
     return df
@@ -95,6 +101,8 @@ Return ONLY the list, no explanation, no markdown, just the list. Example format
 
     # Remove unnecessary characters like `, python, \n, [, ]
     unique_names = [name.replace('`', '').replace('\n', '').replace('python','').replace('[', '').replace(']', '').strip() for name in unique_names if name]
+
+    logger.info(f"Generated aliases for tickers: {unique_names}")
 
     return unique_names
 
