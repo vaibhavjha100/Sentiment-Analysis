@@ -21,7 +21,7 @@ def load_data(file_path):
     pd.DataFrame: DataFrame containing the news data.
     """
     logger.info(f"Loading data from {file_path}")
-    return pd.read_csv(file_path)
+    return pd.read_csv(file_path, index_col=0)
 
 def filter_data(df, text_column='body', word_count_threshold=5):
     """
