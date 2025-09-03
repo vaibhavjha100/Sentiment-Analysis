@@ -8,6 +8,10 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import re
 import math
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained("soleimanian/financial-roberta-large-sentiment")
@@ -153,6 +157,9 @@ def sentiment_pipeline(df: pd.DataFrame, tickers: list, text_column: str = 'body
     Returns:
     pd.DataFrame: DataFrame with added sentiment scores.
     """
+
+    logger.info(f"Applying sentiment analysis on column '{text_column}'")
+
     df = df.copy()
     df['compound'] = df[text_column].apply(predict_sentiment)
     df['enhanced_compound'] = df.apply(lambda row: enhance_ticker_specific_sentiment(row[text_column], tickers, row['compound']), axis=1)
@@ -160,6 +167,9 @@ def sentiment_pipeline(df: pd.DataFrame, tickers: list, text_column: str = 'body
     df = df.drop(columns=['compound'])
     # Rename enhanced_compound to compound
     df = df.rename(columns={'enhanced_compound': 'compound'})
+
+    logger.info("Sentiment analysis completed.")
+
     return df
 
 
