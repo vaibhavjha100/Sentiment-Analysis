@@ -141,6 +141,27 @@ def enhance_ticker_specific_sentiment(text: str, tickers: list, compound : float
 
     return compound
 
+def sentiment_pipeline(df: pd.DataFrame, tickers: list, text_column: str = 'body') -> pd.DataFrame:
+    """
+    Apply sentiment analysis pipeline to a DataFrame.
+
+    Parameters:
+    df (pd.DataFrame): DataFrame containing the text data.
+    tickers (list): List of stock tickers to focus on.
+    text_column (str): Name of the column containing text data.
+
+    Returns:
+    pd.DataFrame: DataFrame with added sentiment scores.
+    """
+    df = df.copy()
+    df['compound'] = df[text_column].apply(predict_sentiment)
+    df['enhanced_compound'] = df.apply(lambda row: enhance_ticker_specific_sentiment(row[text_column], tickers, row['compound']), axis=1)
+    # Drop compound column
+    df = df.drop(columns=['compound'])
+    # Rename enhanced_compound to compound
+    df = df.rename(columns={'enhanced_compound': 'compound'})
+    return df
+
 
 
 
