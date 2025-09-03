@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
+import re
+import math
 
 # Load tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained("soleimanian/financial-roberta-large-sentiment")
@@ -50,7 +52,7 @@ def num_tokens(text: str) -> int:
     tokens = tokenizer.tokenize(text)
     return len(tokens)
 
-def predict_sentiment(text: str) -> tuple:
+def predict_sentiment(text: str) -> float:
     """
     Predict sentiment of the given text.
 
@@ -58,7 +60,7 @@ def predict_sentiment(text: str) -> tuple:
     text (str): The text for sentiment analysis.
 
     Returns:
-    tuple: Sentiment label and confidence score.
+    float: Compound sentiment score ranging from -5 (most negative) to +5 (most positive).
     """
 
     if not text or not text.strip():
@@ -91,15 +93,49 @@ def predict_sentiment(text: str) -> tuple:
 
     weighted_probs = (prob_arr * weights[:, None]).sum(axis=0)
 
-    if hasattr(model.config, "id2label"):
-        id2label = model.config.id2label
-        sentiment_idx = int(np.argmax(weighted_probs))
-        label = id2label[sentiment_idx]
-    else:
-        # Fallback to your predefined list; ensure its order matches model training
-        sentiment_idx = int(np.argmax(weighted_probs))
-        label = sentiment_labels[sentiment_idx]
+    clip = 5.0
+    eps = 1e-9
+    probs = np.asarray(weighted_probs, dtype=float)
+    probs /= probs.sum() + eps
 
-    confidence = float(weighted_probs[sentiment_idx])
+    P_pos, P_neu, P_neg = probs[0], probs[1], probs[2]
 
-    return label, confidence
+    logodds = math.log((P_pos + eps) / (P_neg + eps))
+
+    compound = max(-clip, min(clip, logodds))
+
+    return compound
+
+def enhance_ticker_specific_sentiment(text: str, tickers: list, compound : float|int) -> float:
+    """
+    Enhance sentiment analysis by focusing on specific stock tickers.
+    We already have the general sentiment and confidence from the main text analysis.
+
+    Parameters:
+    text (str): The text for sentiment analysis.
+    tickers (list): List of stock tickers to focus on.
+    compound (float|int): The initial compound sentiment score.
+
+    Returns:
+    float: Enhanced compound score.
+    """
+    mentions = 0
+
+    text_lc = text.lower()
+
+    for ticker in tickers:
+        pattern = r'\b' + re.escape(ticker.lower()) + r'\b'
+        mentions += len(re.findall(pattern, text_lc))
+
+    if mentions == 0:
+        return compound
+
+    multiplier = 1 + 0.3 * math.log1p(mentions)
+
+    enhanced_compound = compound * multiplier
+
+    return enhanced_compound
+
+
+
+
