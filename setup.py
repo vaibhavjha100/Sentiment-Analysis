@@ -28,7 +28,7 @@ setup(
         "pandas",
         "marketminer",
         "google-genai",
-        "dotenv",
+        "python-dotenv",
         "transformers",
         "torch",
         "hf_xet",

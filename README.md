@@ -33,7 +33,7 @@ print(df.info())
 ## Dependencies
 - pandas
 - marketminer
-- dotenv
+- python-dotenv
 - google-genai
 - transformers
 - torch

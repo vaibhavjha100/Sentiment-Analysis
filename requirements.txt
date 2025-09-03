@@ -1,6 +1,6 @@
 marketminer
 pandas
-dotenv
+python-dotenv
 google-genai
 torch
 transformers
