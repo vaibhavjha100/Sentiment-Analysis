@@ -9,7 +9,7 @@ from .sentiment import sentiment_pipeline
 from .aggregation import aggregate_sentiment
 from datetime import datetime, date
 
-def finsenti_pipeline(tickers: list, df: pd.DataFrame=None, text_column: str='body', gemini_api_key: str=None, collect_new: bool=False, start_date: str|datetime|date=None, end_date: str|datetime|date=None, aggregation_method: str='mean', sentiment_col: str='compound') -> pd.DataFrame:
+def finsenti_pipeline(tickers: list, df: pd.DataFrame=None, text_column: str='body', gemini_api_key: str=None, collect_new: bool=False, start_date: str|datetime|date=None, end_date: str|datetime|date=None, aggregation_method: str='weighted_mean', sentiment_col: str='compound') -> pd.DataFrame:
     """
     Complete sentiment analysis pipeline.
 
