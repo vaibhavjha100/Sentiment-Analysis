@@ -8,7 +8,13 @@ import pathlib
 
 here = pathlib.Path(__file__).parent
 init_text = (here / "finsenti" / "__init__.py").read_text()
-version = re.search(r"__version__ = '([^']+)'", init_text).group(1)
+# version = re.search(r"__version__ = '([^']+)'", init_text).group(1)
+init_file = here / "finsenti" / "__init__.py"
+if init_file.exists():
+    init_text = init_file.read_text()
+    version_match = re.search(r"__version__ = ['\"]([^'\"]+)['\"]", init_text)
+    if version_match:
+        version = version_match.group(1)
 
 # Read README for long description
 with open("README.md", "r", encoding="utf-8") as f:
